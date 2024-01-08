@@ -51,36 +51,41 @@ public class QRCodeImagePreloader extends AbstractImagePreloader {
 
 		try {
 
-			DOMSource xml = (DOMSource) source;
-			Document document = (Document) xml.getNode();
-			Element element = document.getDocumentElement();
+			if (source instanceof DOMSource) {
+				DOMSource xml = (DOMSource) source;
+				Document document = (Document) xml.getNode();
+				Element element = document.getDocumentElement();
 
-			if (!QRCodeElementMapping.NAMESPACE.equals(element.getNamespaceURI())) {
+				if (!QRCodeElementMapping.NAMESPACE.equals(element.getNamespaceURI())) {
+					return null;
+				}
+
+				Properties cfg = ConfigurationUtil.toProperties(element);
+
+				String message = cfg.getProperty(MESSAGE_ATTRIBUTE);
+				String charSet = cfg.getProperty(ENCODING_ATTRIBUTE, DEFAULT_CHARACTER_SET);
+				ErrorCorrectionLevel correction = getErrorCorrectionLevel(
+						cfg.getProperty(CORRECTION_ATTRIBUTE, DEFAULT_ERROR_CORRECTION_TYPE));
+				QRCodeDimension dimension = new QRCodeDimension(cfg);
+
+				Map<EncodeHintType, Object> qrHints = new HashMap<EncodeHintType, Object>();
+				qrHints.put(EncodeHintType.ERROR_CORRECTION, correction);
+				qrHints.put(EncodeHintType.CHARACTER_SET, charSet);
+
+				Writer writer = new QRCodeWriter();
+				BitMatrix matrix = writer.encode(message, BarcodeFormat.QR_CODE, 0, 0, qrHints);
+
+				String finalUri = (uri == null || uri.isEmpty()) ? "default" : uri;
+				ImageInfo info = new ImageInfo(finalUri, QRCodeImageLoaderFactory.MIME_TYPE);
+				info.setSize(dimension.toImageSize(context));
+
+				Image image = new QRCodeImage(info, matrix);
+				info.getCustomObjects().put(ImageInfo.ORIGINAL_IMAGE, image);
+
+				return info;
+			} else {
 				return null;
 			}
-
-			Properties cfg = ConfigurationUtil.toProperties(element);
-
-			String message = cfg.getProperty(MESSAGE_ATTRIBUTE);
-			String charSet = cfg.getProperty(ENCODING_ATTRIBUTE, DEFAULT_CHARACTER_SET);
-			ErrorCorrectionLevel correction = getErrorCorrectionLevel(
-					cfg.getProperty(CORRECTION_ATTRIBUTE, DEFAULT_ERROR_CORRECTION_TYPE));
-			QRCodeDimension dimension = new QRCodeDimension(cfg);
-
-			Map<EncodeHintType, Object> qrHints = new HashMap<EncodeHintType, Object>();
-			qrHints.put(EncodeHintType.ERROR_CORRECTION, correction);
-			qrHints.put(EncodeHintType.CHARACTER_SET, charSet);
-
-			Writer writer = new QRCodeWriter();
-			BitMatrix matrix = writer.encode(message, BarcodeFormat.QR_CODE, 0, 0, qrHints);
-
-			ImageInfo info = new ImageInfo(uri, QRCodeImageLoaderFactory.MIME_TYPE);
-			info.setSize(dimension.toImageSize(context));
-
-			Image image = new QRCodeImage(info, matrix);
-			info.getCustomObjects().put(ImageInfo.ORIGINAL_IMAGE, image);
-
-			return info;
 
 		} catch (WriterException writerException) {
 
