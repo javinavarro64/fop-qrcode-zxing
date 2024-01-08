@@ -13,17 +13,17 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 
 public class QRCodeBufferedImageConverter extends AbstractImageConverter {
 
-    public Image convert(Image source, @SuppressWarnings("rawtypes") Map hints) {
-        QRCodeImage qrCodeImage = (QRCodeImage) source;
-        BufferedImage image = MatrixToImageWriter.toBufferedImage(qrCodeImage.getBitMatrix());
-        return new ImageBuffered(source.getInfo(), image, Color.WHITE);
-    }
+	public Image convert(Image source, @SuppressWarnings("rawtypes") Map hints) {
+		QRCodeImage qrCodeImage = (QRCodeImage) source;
+		BufferedImage image = MatrixToImageWriter.toBufferedImage(qrCodeImage.getBitMatrix());
+		return new ImageBuffered(source.getInfo(), image, Color.WHITE);
+	}
 
-    public ImageFlavor getTargetFlavor() {
-        return ImageFlavor.BUFFERED_IMAGE;
-    }
+	public ImageFlavor getTargetFlavor() {
+		return ImageFlavor.BUFFERED_IMAGE;
+	}
 
-    public ImageFlavor getSourceFlavor() {
-        return QRCodeImage.QR_CODE_IMAGE_FLAVOR;
-    }
+	public ImageFlavor getSourceFlavor() {
+		return QRCodeImage.QR_CODE_IMAGE_FLAVOR;
+	}
 }

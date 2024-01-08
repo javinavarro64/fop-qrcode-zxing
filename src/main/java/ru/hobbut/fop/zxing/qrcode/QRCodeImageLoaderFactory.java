@@ -6,29 +6,25 @@ import org.apache.xmlgraphics.image.loader.spi.ImageLoader;
 
 public class QRCodeImageLoaderFactory extends AbstractImageLoaderFactory {
 
-    public static final String MIME_TYPE = "application/qrcode+xml";
+	public static final String MIME_TYPE = "application/qrcode+xml";
 
-    private static final ImageFlavor[] SUPPORTED_FLAVORS = {
-        QRCodeImage.QR_CODE_IMAGE_FLAVOR
-    };
-    
-    private static final String[] SUPPORTED_MIME_TYPES = {
-        MIME_TYPE
-    };
+	private static final ImageFlavor[] SUPPORTED_FLAVORS = { QRCodeImage.QR_CODE_IMAGE_FLAVOR };
 
-    public ImageFlavor[] getSupportedFlavors(String mime) {
-        return SUPPORTED_FLAVORS;
-    }
+	private static final String[] SUPPORTED_MIME_TYPES = { MIME_TYPE };
 
-    public String[] getSupportedMIMETypes() {
-        return SUPPORTED_MIME_TYPES;
-    }
+	public ImageFlavor[] getSupportedFlavors(String mime) {
+		return SUPPORTED_FLAVORS;
+	}
 
-    public boolean isAvailable() {
-        return true;
-    }
+	public String[] getSupportedMIMETypes() {
+		return SUPPORTED_MIME_TYPES;
+	}
 
-    public ImageLoader newImageLoader(ImageFlavor targetFlavor) {
-        return new QRCodeImageLoader(targetFlavor);
-    }
+	public boolean isAvailable() {
+		return true;
+	}
+
+	public ImageLoader newImageLoader(ImageFlavor targetFlavor) {
+		return new QRCodeImageLoader(targetFlavor);
+	}
 }

@@ -12,17 +12,18 @@ import org.apache.xmlgraphics.image.loader.impl.AbstractImageLoader;
 
 public class QRCodeImageLoader extends AbstractImageLoader {
 
-    private final ImageFlavor targetFlavor;
+	private final ImageFlavor targetFlavor;
 
-    public QRCodeImageLoader(ImageFlavor targetFlavor) {
-        this.targetFlavor = targetFlavor;
-    }
+	public QRCodeImageLoader(ImageFlavor targetFlavor) {
+		this.targetFlavor = targetFlavor;
+	}
 
-    public ImageFlavor getTargetFlavor() {
-        return this.targetFlavor;
-    }
+	public ImageFlavor getTargetFlavor() {
+		return this.targetFlavor;
+	}
 
-    public Image loadImage(ImageInfo info, @SuppressWarnings("rawtypes") Map hints, ImageSessionContext session) throws ImageException, IOException {
-        return (QRCodeImage) info.getOriginalImage();
-    }
+	public Image loadImage(ImageInfo info, @SuppressWarnings("rawtypes") Map hints, ImageSessionContext session)
+			throws ImageException, IOException {
+		return (QRCodeImage) info.getOriginalImage();
+	}
 }

@@ -1,6 +1,7 @@
 package ru.hobbut.fop.zxing.qrcode;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 import javax.xml.transform.Result;
@@ -25,34 +26,34 @@ import org.junit.Test;
 
 public class QRCodeTest {
 
-    /**
-     * If META-INF/services/org.apache.xmlgraphics.image.loader.spi.Image* are
-     * removed from the classpath, rendering will fail (unless fop is configured
-     * with <code>&lt;prefer-renderer&gt;true&lt;/prefer-renderer&gt;</code>).
-     * 
-     * @throws FOPException
-     * @throws TransformerException
-     */
-    @Test
-    public void renderingShouldNotRaiseErrors() throws IOException, FOPException, TransformerException {
+	/**
+	 * If META-INF/services/org.apache.xmlgraphics.image.loader.spi.Image* are
+	 * removed from the classpath, rendering will fail (unless fop is configured
+	 * with <code>&lt;prefer-renderer&gt;true&lt;/prefer-renderer&gt;</code>).
+	 *
+	 * @throws FOPException
+	 * @throws TransformerException
+	 */
+	@Test
+	public void renderingShouldNotRaiseErrors() throws IOException, FOPException, TransformerException {
 
-        FopFactory fopFactory = FopFactory.newInstance();
+		FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
 
-        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-        foUserAgent.getEventBroadcaster().addEventListener(new EventListener() {
+		FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+		foUserAgent.getEventBroadcaster().addEventListener(new EventListener() {
 
-            public void processEvent(Event event) {
-                EventSeverity severity = event.getSeverity();
-                if (severity == EventSeverity.ERROR) {
-                    Assert.fail(EventFormatter.format(event));
-                }
-            }
-        });
+			public void processEvent(Event event) {
+				EventSeverity severity = event.getSeverity();
+				if (severity == EventSeverity.ERROR) {
+					Assert.fail(EventFormatter.format(event));
+				}
+			}
+		});
 
-        Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, new ByteArrayOutputStream());
+		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, new ByteArrayOutputStream());
 
-        Source source = new StreamSource(getClass().getResourceAsStream("/sample.xml"));
-        Result result = new SAXResult(fop.getDefaultHandler());
-        TransformerFactory.newInstance().newTransformer().transform(source, result);
-    }
+		Source source = new StreamSource(getClass().getResourceAsStream("/sample.xml"));
+		Result result = new SAXResult(fop.getDefaultHandler());
+		TransformerFactory.newInstance().newTransformer().transform(source, result);
+	}
 }
